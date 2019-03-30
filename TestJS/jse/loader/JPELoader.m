@@ -9,7 +9,7 @@
 #import "JPELoader.h"
 #import "ZipArchive.h"
 #define   DownLoadPath @"http"
-@implementation JPELoader
+@implementation JPERun
 
 +(void)needDonw{
     NSString* fn = [self fn];

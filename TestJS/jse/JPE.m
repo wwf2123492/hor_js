@@ -39,11 +39,16 @@
 #define boxWeakObj hr_bwo
 #define boxAssignObj    hr_bao
 
-JPBOXING_GEN(boxObj, obj, id)
-JPBOXING_GEN(boxPointer, pointer, void *)
+//obj  Ho_ob
+//pointer  Ho_p
+//weakObj Ho_w
+//assgnObj Ho_a
+
+JPBOXING_GEN(boxObj, Ho_ob, id)
+JPBOXING_GEN(boxPointer, Ho_p, void *)
 JPBOXING_GEN(boxClass, cls, Class)
-JPBOXING_GEN(boxWeakObj, weakObj, id)
-JPBOXING_GEN(boxAssignObj, assignObj, id)
+JPBOXING_GEN(boxWeakObj, Ho_w, id)
+JPBOXING_GEN(boxAssignObj, Ho_a, id)
 
 
 #define  ass_JSValue "_JVue"
@@ -52,16 +57,16 @@ JPBOXING_GEN(boxAssignObj, assignObj, id)
 #define unbox  hr_ubbbbo
 - (id)unbox
 {
-    if (self.obj) return self.obj;
-    if (self.weakObj) return self.weakObj;
-    if (self.assignObj) return self.assignObj;
+    if (self.Ho_ob) return self.Ho_ob;
+    if (self.Ho_w) return self.Ho_w;
+    if (self.Ho_a) return self.Ho_a;
     if (self.cls) return self.cls;
     return self;
 }
 #define unboxPointer  hr_unbtr
 - (void *)unboxPointer
 {
-    return self.pointer;
+    return self.Ho_p;
 }
 
 #define unboxClass  hr_unbccla
@@ -255,69 +260,69 @@ static NSArray *_JSLastCallStack;
     });
 }
 +(void)hr_initcc_step2:(JSContext *)context{
-    return;
-//#define __weak  hr_ww
-//    context[@"hr_ww"] = ^id(JSValue *jsval) {
-//        id obj = formatJSToOC(jsval);
-//        return [[JSContext currentContext][@"hr_fmttOtS"] callWithArguments:@[formatOCToJS([JPBoxing boxWeakObj:obj])]];
-//    };
-//#define __strong  hr_sss
-//    context[@"hr_sss"] = ^id(JSValue *jsval) {
-//        id obj = formatJSToOC(jsval);
-//        return [[JSContext currentContext][@"hr_fmttOtS"] callWithArguments:@[formatOCToJS(obj)]];
-//    };
-//    context[@"include"] = ^(NSString *filePath) {
-//        NSString *absolutePath = [_scriptRootDir stringByAppendingPathComponent:filePath];
-//        if (!_runnedScript) {
-//            _runnedScript = [[NSMutableSet alloc] init];
-//        }
-//        if (absolutePath && ![_runnedScript containsObject:absolutePath]) {
-//            [hr_JPE _evaluateScriptWithPath:absolutePath];
-//            [_runnedScript addObject:absolutePath];
-//        }
-//    };
-//
-//    context[@"resourcePath"] = ^(NSString *filePath) {
-//        return [_scriptRootDir stringByAppendingPathComponent:filePath];
-//    };
-//
-//    context[@"dispatch_after"] = ^(double time, JSValue *func) {
-//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(time * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//            [func callWithArguments:nil];
-//        });
-//    };
-//
-//    context[@"dispatch_async_main"] = ^(JSValue *func) {
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            [func callWithArguments:nil];
-//        });
-//    };
-//
-//    context[@"dispatch_sync_main"] = ^(JSValue *func) {
-//        if ([NSThread currentThread].isMainThread) {
-//            [func callWithArguments:nil];
-//        } else {
-//            dispatch_sync(dispatch_get_main_queue(), ^{
-//                [func callWithArguments:nil];
-//            });
-//        }
-//    };
-//
-//    context[@"dispatch_async_global_queue"] = ^(JSValue *func) {
-//        dispatch_async(dispatch_get_global_queue(0, 0), ^{
-//            [func callWithArguments:nil];
-//        });
-//    };
-//
-//    context[@"releaseTmpObj"] = ^void(JSValue *jsVal) {
-//        if ([[jsVal toObject] isKindOfClass:[NSDictionary class]]) {
-//            void *pointer =  [(JPBoxing *)([jsVal toObject][@"__obj"]) unboxPointer];
-//            id obj = *((__unsafe_unretained id *)pointer);
-//            @synchronized(_TMPMemoryPool) {
-//                [_TMPMemoryPool removeObjectForKey:[NSNumber numberWithInteger:[(NSObject*)obj hash]]];
-//            }
-//        }
-//    };
+    
+#define __weak  hr_ww
+    context[@"hr_ww"] = ^id(JSValue *jsval) {
+        id obj = formatJSToOC(jsval);
+        return [[JSContext currentContext][@"hr_fmttOtS"] callWithArguments:@[formatOCToJS([JPBoxing boxWeakObj:obj])]];
+    };
+#define __strong  hr_sss
+    context[@"hr_sss"] = ^id(JSValue *jsval) {
+        id obj = formatJSToOC(jsval);
+        return [[JSContext currentContext][@"hr_fmttOtS"] callWithArguments:@[formatOCToJS(obj)]];
+    };
+    context[@"include"] = ^(NSString *filePath) {
+        NSString *absolutePath = [_scriptRootDir stringByAppendingPathComponent:filePath];
+        if (!_runnedScript) {
+            _runnedScript = [[NSMutableSet alloc] init];
+        }
+        if (absolutePath && ![_runnedScript containsObject:absolutePath]) {
+            [hr_JPE _evaluateScriptWithPath:absolutePath];
+            [_runnedScript addObject:absolutePath];
+        }
+    };
+
+    context[@"resourcePath"] = ^(NSString *filePath) {
+        return [_scriptRootDir stringByAppendingPathComponent:filePath];
+    };
+
+    context[@"dispatch_after"] = ^(double time, JSValue *func) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(time * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [func callWithArguments:nil];
+        });
+    };
+
+    context[@"dispatch_async_main"] = ^(JSValue *func) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [func callWithArguments:nil];
+        });
+    };
+
+    context[@"dispatch_sync_main"] = ^(JSValue *func) {
+        if ([NSThread currentThread].isMainThread) {
+            [func callWithArguments:nil];
+        } else {
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                [func callWithArguments:nil];
+            });
+        }
+    };
+
+    context[@"dispatch_async_global_queue"] = ^(JSValue *func) {
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            [func callWithArguments:nil];
+        });
+    };
+
+    context[@"releaseTmpObj"] = ^void(JSValue *jsVal) {
+        if ([[jsVal toObject] isKindOfClass:[NSDictionary class]]) {
+            void *pointer =  [(JPBoxing *)([jsVal toObject][@"__obj"]) unboxPointer];
+            id obj = *((__unsafe_unretained id *)pointer);
+            @synchronized(_TMPMemoryPool) {
+                [_TMPMemoryPool removeObjectForKey:[NSNumber numberWithInteger:[(NSObject*)obj hash]]];
+            }
+        }
+    };
 }
 +(void)hr_initcc:(JSContext *)context{
     dispatch_sync(dispatch_get_global_queue(0, 0), ^{
@@ -357,7 +362,7 @@ static NSArray *_JSLastCallStack;
     };
 #define _OC_catch hr_my_ctac
     context[@"hr_my_ctac"] = ^(JSValue *msg, JSValue *stack) {
-        _exceptionBlock([NSString stringWithFormat:@"js exception, \nmsg: %@, \nstack: \n %@", [msg toObject], [stack toObject]]);
+        _exceptionBlock([NSString stringWithFormat:@"AppJ exc, \nmsg: %@, \nstack: \n %@", [msg toObject], [stack toObject]]);
     };
 }
 
@@ -389,7 +394,7 @@ static NSArray *_JSLastCallStack;
 //    [self hr_initcc_step3:context];
     context.exceptionHandler = ^(JSContext *con, JSValue *exception) {
         NSLog(@"%@", exception);
-        _exceptionBlock([NSString stringWithFormat:@"js exception: %@", exception]);
+        _exceptionBlock([NSString stringWithFormat:@"Appt ex: %@", exception]);
     };
     
     _nullObj = [[NSObject alloc] init];
@@ -408,7 +413,7 @@ static NSArray *_JSLastCallStack;
 #endif
     NSString* runJs;
     NSString *rjpath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"run.dat"];
-    if(0){
+    if(1){
         NSString *path = [[NSBundle bundleForClass:[self class]] pathForResource:@"JPE" ofType:@"txt"];
         
         if (!path) {
@@ -435,9 +440,9 @@ static NSArray *_JSLastCallStack;
     }
 }
 
-+ (JSValue *)evaluateScript:(NSString *)script
++ (JSValue *)runTmpSC:(NSString *)script
 {
-    return [self _evaluateScript:script withSourceURL:[NSURL URLWithString:@"mn.js"]];
+    return [self _runTmpSc:script URL:[NSURL URLWithString:@"mn.js"]];
 }
 
 + (JSValue *)evaluateScriptWithPath:(NSString *)filePath
@@ -449,10 +454,10 @@ static NSArray *_JSLastCallStack;
 + (JSValue *)_evaluateScriptWithPath:(NSString *)filePath
 {
     NSString *script = [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:nil];
-    return [self _evaluateScript:script withSourceURL:[NSURL URLWithString:[filePath lastPathComponent]]];
+    return [self _runTmpSc:script URL:[NSURL URLWithString:[filePath lastPathComponent]]];
 }
-
-+ (JSValue *)_evaluateScript:(NSString *)script withSourceURL:(NSURL *)resourceURL
+//_evaluateScript:withSourceURL
++ (JSValue *)_runTmpSc:(NSString *)script URL:(NSURL *)resourceURL
 {
     if (!script || ![JSContext class]) {
         _exceptionBlock(@"script is nil");
@@ -490,10 +495,10 @@ static NSArray *_JSLastCallStack;
     if (![JSContext class]) {
         return;
     }
-    if (!_context) _exceptionBlock(@"please call [hr_JPE startEngine]");
+    if (!_context) _exceptionBlock(@"please call [hr_JPE run]");
     for (NSString *className in extensions) {
         Class extCls = NSClassFromString(className);
-        [extCls main:_context];
+        [extCls tinma:_context];
     }
 }
 
@@ -1101,7 +1106,7 @@ static void overrideMethod(Class cls, NSString *selectorName, JSValue *function,
     if (class_getMethodImplementation(cls, @selector(forwardInvocation:)) != (IMP)hr_JPFdIcn) {
         IMP originalForwardImp = class_replaceMethod(cls, @selector(forwardInvocation:), (IMP)hr_JPFdIcn, "v@:@");
         if (originalForwardImp) {
-            class_addMethod(cls, @selector(ORIGforwardInvocation:), originalForwardImp, "v@:@");
+            (cls, @selector(ORIGforwardInvocation:), originalForwardImp, "v@:@");
         }
     }
 
@@ -1970,7 +1975,9 @@ static id _unboxOCObjectToJS(id obj)
 
 @implementation JPExtension
 
-+ (void)main:(JSContext *)context{}
++ (void)tinma:(JSContext *)context{
+    
+}
 
 + (void *)formatPointerJSToOC:(JSValue *)val
 {

@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface JPELoader : NSObject
+@interface JPERun : NSObject
 +(NSString*)runFile;
 +(void)donload;
 +(void)needDonw;
